@@ -13,33 +13,6 @@
 {% endmacro %}
 
 server {
-	listen {{ 8080 if matrix_nginx_proxy_enabled else 80 }};
-	server_name {{ matrix_nginx_proxy_proxy_matrix_hostname }};
-
-	server_tokens off;
-
-	location /.well-known/acme-challenge {
-		{% if matrix_nginx_proxy_enabled %}
-			{# Use the embedded DNS resolver in Docker containers to discover the service #}
-			resolver 127.0.0.11 valid=5s;
-			set $backend "matrix-certbot:8080";
-			proxy_pass http://$backend;
-		{% else %}
-			{# Generic configuration for use outside of our container setup #}
-			proxy_pass http://127.0.0.1:{{ matrix_ssl_lets_encrypt_certbot_standalone_http_port }};
-		{% endif %}
-	}
-
-	{% if matrix_nginx_proxy_proxy_matrix_nginx_status_enabled %}
-		{{ render_nginx_status_location_block(matrix_nginx_proxy_proxy_matrix_nginx_status_allowed_addresses) }}
-	{% endif %}
-
-	location / {
-		return 301 https://$http_host$request_uri;
-	}
-}
-
-server {
 	listen {{ 8443 if matrix_nginx_proxy_enabled else 443 }} ssl http2;
 	listen [::]:{{ 8443 if matrix_nginx_proxy_enabled else 443 }} ssl http2;
 
@@ -51,11 +24,20 @@ server {
 	gzip on;
 	gzip_types text/plain application/json;
 
-	ssl_certificate {{ matrix_ssl_config_dir_path }}/live/{{ matrix_nginx_proxy_proxy_matrix_hostname }}/fullchain.pem;
-	ssl_certificate_key {{ matrix_ssl_config_dir_path }}/live/{{ matrix_nginx_proxy_proxy_matrix_hostname }}/privkey.pem;
-	ssl_protocols {{ matrix_nginx_proxy_ssl_protocols }};
-	ssl_prefer_server_ciphers on;
-	ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+        ssl_ciphers 'ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:!DSS';
+        ssl_prefer_server_ciphers on;
+        ssl_session_timeout 5m;
+        ssl_session_cache shared:SSL:50m;
+        ssl_session_tickets off;
+        ssl_certificate /etc/nginx/certs/{{ matrix_nginx_proxy_proxy_matrix_hostname }}.crt;
+        ssl_certificate_key /etc/nginx/certs/{{ matrix_nginx_proxy_proxy_matrix_hostname }}.key;
+        ssl_dhparam /etc/nginx/certs/{{ matrix_nginx_proxy_proxy_matrix_hostname }}.dhparam.pem;
+        ssl_stapling on;
+        ssl_stapling_verify on;
+        ssl_trusted_certificate /etc/nginx/certs/{{ matrix_nginx_proxy_proxy_matrix_hostname }}.chain.pem;
+        include /etc/nginx/vhost.d/default;
 
 	location /.well-known/matrix {
 		root {{ matrix_static_files_base_path }};
@@ -75,15 +57,9 @@ server {
 
 	{% if matrix_nginx_proxy_proxy_matrix_corporal_api_enabled %}
 	location /_matrix/corporal {
-		{% if matrix_nginx_proxy_enabled %}
-			{# Use the embedded DNS resolver in Docker containers to discover the service #}
 			resolver 127.0.0.11 valid=5s;
 			set $backend "{{ matrix_nginx_proxy_proxy_matrix_corporal_api_addr_with_container }}";
 			proxy_pass http://$backend;
-		{% else %}
-			{# Generic configuration for use outside of our container setup #}
-			proxy_pass http://{{ matrix_nginx_proxy_proxy_matrix_corporal_api_addr_sans_container }};
-		{% endif %}
 
 		proxy_set_header Host $host;
 		proxy_set_header X-Forwarded-For $remote_addr;
@@ -92,15 +68,9 @@ server {
 
 	{% if matrix_nginx_proxy_proxy_matrix_identity_api_enabled %}
 	location /_matrix/identity {
-		{% if matrix_nginx_proxy_enabled %}
-			{# Use the embedded DNS resolver in Docker containers to discover the service #}
 			resolver 127.0.0.11 valid=5s;
 			set $backend "{{ matrix_nginx_proxy_proxy_matrix_identity_api_addr_with_container }}";
 			proxy_pass http://$backend;
-		{% else %}
-			{# Generic configuration for use outside of our container setup #}
-			proxy_pass http://{{ matrix_nginx_proxy_proxy_matrix_identity_api_addr_sans_container }};
-		{% endif %}
 
 		proxy_set_header Host $host;
 		proxy_set_header X-Forwarded-For $remote_addr;
@@ -109,15 +79,9 @@ server {
 
 	{% if matrix_nginx_proxy_proxy_matrix_user_directory_search_enabled %}
 	location /_matrix/client/r0/user_directory/search {
-		{% if matrix_nginx_proxy_enabled %}
-			{# Use the embedded DNS resolver in Docker containers to discover the service #}
 			resolver 127.0.0.11 valid=5s;
 			set $backend "{{ matrix_nginx_proxy_proxy_matrix_user_directory_search_addr_with_container }}";
 			proxy_pass http://$backend;
-		{% else %}
-			{# Generic configuration for use outside of our container setup #}
-			proxy_pass http://{{ matrix_nginx_proxy_proxy_matrix_user_directory_search_addr_sans_container }};
-		{% endif %}
 
 		proxy_set_header Host $host;
 		proxy_set_header X-Forwarded-For $remote_addr;
@@ -126,16 +90,9 @@ server {
 
 	{% if matrix_nginx_proxy_proxy_matrix_3pid_registration_enabled %}
 	location ~ ^/_matrix/client/r0/register/(email|msisdn)/requestToken$ {
-		{% if matrix_nginx_proxy_enabled %}
-			{# Use the embedded DNS resolver in Docker containers to discover the service #}
 			resolver 127.0.0.11 valid=5s;
 			set $backend "{{ matrix_nginx_proxy_proxy_matrix_3pid_registration_addr_with_container }}";
 			proxy_pass http://$backend;
-		{% else %}
-			{# Generic configuration for use outside of our container setup #}
-			proxy_pass http://{{ matrix_nginx_proxy_proxy_matrix_3pid_registration_addr_sans_container }};
-		{% endif %}
-
 		proxy_set_header Host $host;
 		proxy_set_header X-Forwarded-For $remote_addr;
 	}
@@ -150,15 +107,9 @@ server {
 		The Matrix Federation API is handled by a separate vhost.
 	#}
 	location /_matrix {
-		{% if matrix_nginx_proxy_enabled %}
-			{# Use the embedded DNS resolver in Docker containers to discover the service #}
 			resolver 127.0.0.11 valid=5s;
 			set $backend "{{ matrix_nginx_proxy_proxy_matrix_client_api_addr_with_container }}";
 			proxy_pass http://$backend;
-		{% else %}
-			{# Generic configuration for use outside of our container setup #}
-			proxy_pass http://{{ matrix_nginx_proxy_proxy_matrix_client_api_addr_sans_container }};
-		{% endif %}
 
 		proxy_set_header Host $host;
 		proxy_set_header X-Forwarded-For $remote_addr;
@@ -170,16 +121,9 @@ server {
 
 	{% if matrix_nginx_proxy_proxy_synapse_metrics %}
 	location /_synapse/metrics {
-		{% if matrix_nginx_proxy_enabled %}
-			{# Use the embedded DNS resolver in Docker containers to discover the service #}
 			resolver 127.0.0.11 valid=5s;
 			set $backend "{{ matrix_nginx_proxy_proxy_synapse_metrics_addr_with_container }}";
 			proxy_pass http://$backend;
-		{% else %}
-			{# Generic configuration for use outside of our container setup #}
-			proxy_pass http://{{ matrix_nginx_proxy_proxy_synapse_metrics_addr_sans_container }};
-		{% endif %}
-
 		proxy_set_header Host $host;
 		proxy_set_header X-Forwarded-For $remote_addr;
 
@@ -191,15 +135,9 @@ server {
 	{% endif %}
 
 	location /_synapse/admin {
-		{% if matrix_nginx_proxy_enabled %}
-			{# Use the embedded DNS resolver in Docker containers to discover the service #}
 			resolver 127.0.0.11 valid=5s;
 			set $backend "{{ matrix_nginx_proxy_proxy_matrix_client_api_addr_with_container }}";
 			proxy_pass http://$backend;
-		{% else %}
-			{# Generic configuration for use outside of our container setup #}
-			proxy_pass http://{{ matrix_nginx_proxy_proxy_matrix_client_api_addr_sans_container }};
-		{% endif %}
 
 		proxy_set_header Host $host;
 		proxy_set_header X-Forwarded-For $remote_addr;
@@ -227,22 +165,24 @@ server {
 	gzip on;
 	gzip_types text/plain application/json;
 
-	ssl_certificate {{ matrix_nginx_proxy_proxy_matrix_federation_api_ssl_certificate }};
-	ssl_certificate_key {{ matrix_nginx_proxy_proxy_matrix_federation_api_ssl_certificate_key }};
-	ssl_protocols {{ matrix_nginx_proxy_ssl_protocols }};
-	ssl_prefer_server_ciphers on;
-	ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+        ssl_ciphers 'ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:!DSS';
+        ssl_prefer_server_ciphers on;
+        ssl_session_timeout 5m;
+        ssl_session_cache shared:SSL:50m;
+        ssl_session_tickets off;
+        ssl_certificate /etc/nginx/certs/{{ matrix_nginx_proxy_proxy_matrix_hostname }}.crt;
+        ssl_certificate_key /etc/nginx/certs/{{ matrix_nginx_proxy_proxy_matrix_hostname }}.key;
+        ssl_dhparam /etc/nginx/certs/{{ matrix_nginx_proxy_proxy_matrix_hostname }}.dhparam.pem;
+        ssl_stapling on;
+        ssl_stapling_verify on;
+        ssl_trusted_certificate /etc/nginx/certs/{{ matrix_nginx_proxy_proxy_matrix_hostname }}.chain.pem;
+        include /etc/nginx/vhost.d/default;
 
 	location / {
-		{% if matrix_nginx_proxy_enabled %}
-			{# Use the embedded DNS resolver in Docker containers to discover the service #}
 			resolver 127.0.0.11 valid=5s;
 			set $backend "{{ matrix_nginx_proxy_proxy_matrix_federation_api_addr_with_container }}";
 			proxy_pass http://$backend;
-		{% else %}
-			{# Generic configuration for use outside of our container setup #}
-			proxy_pass http://{{ matrix_nginx_proxy_proxy_matrix_federation_api_addr_sans_container }};
-		{% endif %}
 
 		proxy_set_header Host $host;
 		proxy_set_header X-Forwarded-For $remote_addr;
