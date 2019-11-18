@@ -45,6 +45,12 @@
     cmd: "docker network create --driver=bridge {{ matrix_coturn_docker_network }}"
   when: "matrix_coturn_enabled|bool and matrix_coturn_result_docker_network.stdout == '' and not ansible_check_mode"
 
+- name: --FEDE-- Install docker-compose coturn
+  template:
+    src: "{{ role_path }}/templates/docker-compose.coturn.yml"
+    dest: "/var/lib/docker/lab/apps/matrix/docker-compose.coturn.yml"
+    mode: 0644
+
 - name: Ensure matrix-coturn.service installed
   template:
     src: "{{ role_path }}/templates/systemd/matrix-coturn.service.j2"

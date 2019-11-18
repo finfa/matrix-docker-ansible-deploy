@@ -69,6 +69,12 @@
     owner: "{{ matrix_user_username }}"
     group: "{{ matrix_user_username }}"
 
+- name: --FEDE-- Install docker-compose whatsapp
+  template:
+    src: "{{ role_path }}/templates/docker-compose.whatsapp.yml"
+    dest: "/var/lib/docker/lab/apps/matrix/docker-compose.whatsapp.yml"
+    mode: 0644
+
 - name: Ensure matrix-mautrix-whatsapp.service installed
   template:
     src: "{{ role_path }}/templates/systemd/matrix-mautrix-whatsapp.service.j2"

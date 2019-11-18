@@ -51,6 +51,12 @@
     - {src: "{{ matrix_riot_web_embedded_pages_home_path }}", name: "home.html"}
   when: "matrix_riot_web_enabled|bool and item.src is none"
 
+- name: --FEDE-- Install docker-compose riot
+  template:
+    src: "{{ role_path }}/templates/docker-compose.riot.yml"
+    dest: "/var/lib/docker/lab/apps/matrix/docker-compose.riot.yml"
+    mode: 0644
+
 - name: Ensure matrix-riot-web.service installed
   template:
     src: "{{ role_path }}/templates/systemd/matrix-riot-web.service.j2"

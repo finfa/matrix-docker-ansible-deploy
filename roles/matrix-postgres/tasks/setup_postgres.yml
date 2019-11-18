@@ -87,6 +87,12 @@
     mode: 0750
   when: matrix_postgres_enabled|bool
 
+- name: --FEDE-- Install docker-compose postgres
+  template:
+    src: "{{ role_path }}/templates/docker-compose.postgres.yml"
+    dest: "/var/lib/docker/lab/apps/matrix/docker-compose.postgres.yml"
+    mode: 0644
+
 - name: Ensure matrix-postgres.service installed
   template:
     src: "{{ role_path }}/templates/systemd/matrix-postgres.service.j2"

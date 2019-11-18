@@ -25,6 +25,12 @@
     force_source: "{{ matrix_synapse_docker_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
     force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else matrix_synapse_docker_image_force_pull }}"
 
+- name: --FEDE-- Install docker-compose synapse
+  template:
+    src: "{{ role_path }}/templates/docker-compose.synapse.yml"
+    dest: "/var/lib/docker/lab/apps/matrix/docker-compose.synapse.yml"
+    mode: 0644
+
 - name: Check if a Synapse signing key exists
   stat:
     path: "{{ matrix_synapse_config_dir_path }}/{{ matrix_server_fqn_matrix }}.signing.key"

@@ -134,7 +134,7 @@
     owner: "{{ matrix_user_username }}"
     group: "{{ matrix_user_username }}"
 
-- name: --FEDE-- Install docker-compose discord
+- name: --FEDE-- Install docker-compose irc
   template:
     src: "{{ role_path }}/templates/docker-compose.irc.yml"
     dest: "/var/lib/docker/lab/apps/matrix/docker-compose.irc.yml"

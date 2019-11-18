@@ -60,6 +60,12 @@
     owner: "{{ matrix_user_username }}"
     group: "{{ matrix_user_username }}"
 
+- name: --FEDE-- Install docker-compose telegram
+  template:
+    src: "{{ role_path }}/templates/docker-compose.telegram.yml"
+    dest: "/var/lib/docker/lab/apps/matrix/docker-compose.telegram.yml"
+    mode: 0644
+
 - name: Ensure matrix-mautrix-telegram.service installed
   template:
     src: "{{ role_path }}/templates/systemd/matrix-mautrix-telegram.service.j2"
