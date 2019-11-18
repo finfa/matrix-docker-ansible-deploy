@@ -1,4 +1,4 @@
-# Matrix (An open network for secure, decentralized communication) server setup using Ansible and Docker
+# UNMAINTAINED - Matrix (An open network for secure, decentralized communication) server setup using Ansible and Docker
 
 ## Purpose
 
