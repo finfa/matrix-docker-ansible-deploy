@@ -1,0 +1,31 @@
+version: '3'
+services:
+  dimension:
+    hostname: dimension.technodro.me
+    container_name: matrix-dimension
+    image: "{{ matrix_dimension_docker_image }}"
+    user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
+    cap_drop:
+      - ALL
+    restart: always
+    networks:
+      - external_network
+    volumes:
+			- "{{ matrix_dimension_base_path }}:/data:rw"
+    ports:
+			{% if matrix_dimension_container_http_host_bind_port %}
+			- "{{ matrix_dimension_container_http_host_bind_port }}:8184"
+			{% endif %}
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+      - VIRTUAL_HOST=dimension.technodro.me
+      - VIRTUAL_PORT=8184
+      - LETSENCRYPT_HOST=dimension.technodro.me
+      - LETSENCRYPT_EMAIL=admin@technodro.me
+      - LETSENCRYPT_TEST=false
+      - HSTS=off
+    
+networks:
+  external_network:
+    external:
+      name: nginx_nginx

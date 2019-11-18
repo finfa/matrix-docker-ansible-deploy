@@ -1,0 +1,29 @@
+version: '3'
+services:
+  mxisd:
+    container_name: matrix-mxisd
+    image: "{{ matrix_mxisd_docker_image }}"
+    user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
+    cap_drop:
+      - ALL
+    restart: always
+    networks:
+      - external_network
+    tmpfs: /tmp
+    read_only: true
+    volumes:
+			- "{{ matrix_mxisd_config_path }}:/etc/mxisd:ro"
+			- "{{ matrix_mxisd_data_path }}:/var/mxisd:rw"
+    ports:
+			{% if matrix_mxisd_container_http_host_bind_port %}
+			-  "{{ matrix_mxisd_container_http_host_bind_port }}:8090"
+			{% endif %}
+    environment:
+			{% if matrix_mxisd_verbose_logging %}
+			- MXISD_LOG_LEVEL=debug
+			{% endif %}
+
+networks:
+  external_network:
+    external:
+      name: nginx_nginx

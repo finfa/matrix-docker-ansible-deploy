@@ -1,0 +1,31 @@
+version: '3'
+services:
+  coturn:
+    container_name: matrix-coturn
+    image: "{{ matrix_coturn_docker_image }}"
+    user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
+    entrypoint: turnserver
+    read_only: true
+    tmpfs: /var/tmp
+    cap_drop:
+      - ALL
+    restart: always
+    networks:
+      - external_network
+    command: -c /turnserver.conf
+    volumes:
+			- "{{ matrix_coturn_config_path }}:/turnserver.conf:ro"
+			{% for volume in matrix_coturn_container_additional_volumes %}
+			- "{{ volume.src }}:{{ volume.dst }}:{{ volume.options }}"
+			{% endfor %}
+    ports:
+			- 3478:3478
+			- 3478:3478/udp
+			- 5349:5349
+			- 5349:5349/udp
+			- {{ matrix_coturn_turn_udp_min_port }}-{{ matrix_coturn_turn_udp_max_port }}:{{ matrix_coturn_turn_udp_min_port }}-{{ matrix_coturn_turn_udp_max_port }}/udp
+    
+networks:
+  external_network:
+    external:
+      name: nginx_nginx

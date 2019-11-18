@@ -1,0 +1,21 @@
+version: '3'
+services:
+  whatsapp:
+    container_name: matrix-mautrix-whatsapp
+    image: "{{ matrix_mautrix_whatsapp_docker_image }}"
+    user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
+    cap_drop:
+      - ALL
+    restart: always
+    networks:
+      - external_network
+    command: "/usr/bin/mautrix-whatsapp -c /config/config.yaml -r /config/registration.yaml"
+		workdir: /data
+    volumes:
+			- "{{ matrix_mautrix_whatsapp_config_path }}:/config:z"
+			- "{{ matrix_mautrix_whatsapp_data_path }}:/data:z"
+
+networks:
+  external_network:
+    external:
+      name: nginx_nginx

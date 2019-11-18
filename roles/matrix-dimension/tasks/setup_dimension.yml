@@ -30,6 +30,12 @@
     force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else matrix_dimension_docker_image_force_pull }}"
   when: matrix_dimension_enabled|bool
 
+- name: --FEDE-- Install docker-compose dimension
+  template:
+    src: "{{ role_path }}/templates/docker-compose.dimension.yml"
+    dest: "/var/lib/docker/lab/apps/matrix/docker-compose.dimension.yml"
+    mode: 0644
+
 - name: Ensure matrix-dimension.service installed
   template:
     src: "{{ role_path }}/templates/systemd/matrix-dimension.service.j2"

@@ -11,8 +11,19 @@ Wants={{ service }}
 
 [Service]
 Type=simple
-ExecStartPre=-/usr/bin/docker kill matrix-mxisd
-ExecStartPre=-/usr/bin/docker rm matrix-mxisd
+ExecStartPre=/bin/sleep 5
+ExecStartPre=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.mxisd.yml down
+ExecStart=docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.mxisd.yml up
+ExecStop=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.mxisd.yml stop
+
+Restart=always
+RestartSec=30
+SyslogIdentifier=matrix-mxisd
+
+[Install]
+WantedBy=multi-user.target
+
+####################################################################
 
 # mxisd writes an SQLite shared library (libsqlitejdbc.so) to /tmp and executes it from there,
 # so /tmp needs to be mounted with an exec option.
@@ -38,9 +49,3 @@ ExecStart=/usr/bin/docker run --rm --name matrix-mxisd \
 
 ExecStop=-/usr/bin/docker kill matrix-mxisd
 ExecStop=-/usr/bin/docker rm matrix-mxisd
-Restart=always
-RestartSec=30
-SyslogIdentifier=matrix-mxisd
-
-[Install]
-WantedBy=multi-user.target

@@ -47,6 +47,12 @@
     - {value: "{{ matrix_mxisd_threepid_medium_email_custom_matrixid_template }}", location: 'mxid-template.eml'}
   when: "matrix_mxisd_enabled|bool and matrix_mxisd_threepid_medium_email_custom_templates_enabled|bool and item.value"
 
+- name: --FEDE-- Install docker-compose mxisd
+  template:
+    src: "{{ role_path }}/templates/docker-compose.mxisd.yml"
+    dest: "/var/lib/docker/lab/apps/matrix/docker-compose.mxisd.yml"
+    mode: 0644
+
 - name: Ensure matrix-mxisd.service installed
   template:
     src: "{{ role_path }}/templates/systemd/matrix-mxisd.service.j2"

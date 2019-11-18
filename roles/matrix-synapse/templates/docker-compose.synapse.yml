@@ -1,0 +1,48 @@
+version: '3'
+services:
+  main:
+    container_name: matrix-synapse
+    hostname: matrix.technodro.me
+    image: "{{ matrix_synapse_docker_image }}"
+    user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
+    cap_drop:
+      - ALL
+    restart: always
+    read_only: true
+    networks:
+      - external_network
+    entrypoint: python
+    command: "-m synapse.app.homeserver -c /data/homeserver.yaml"
+    tmpfs:
+      - /tmp
+    volumes:
+			- "{{ matrix_synapse_config_dir_path }}:/data:ro"
+			- "{{ matrix_synapse_run_path }}:/matrix-run:rw"
+			- "{{ matrix_synapse_storage_path }}:/matrix-media-store-parent:slave"
+    environment:
+      - "SYNAPSE_CACHE_FACTOR={{ matrix_synapse_cache_factor }}"
+      - VIRTUAL_HOST=matrix.technodro.me
+      - VIRTUAL_PORT=8008
+      - LETSENCRYPT_HOST=matrix.technodro.me
+      - LETSENCRYPT_EMAIL=admin@technodro.me
+      - LETSENCRYPT_TEST=false
+      - HSTS=off
+
+    ports:
+			{% if matrix_synapse_container_client_api_host_bind_port %}
+			- "{{ matrix_synapse_container_client_api_host_bind_port }}:8008"
+			{% endif %}
+			{% if matrix_synapse_federation_enabled and matrix_synapse_tls_federation_listener_enabled and matrix_synapse_container_federation_api_tls_host_bind_port %}
+			- "{{ matrix_synapse_container_federation_api_tls_host_bind_port }}:8448"
+			{% endif %}
+			{% if matrix_synapse_federation_enabled and matrix_synapse_container_federation_api_plain_host_bind_port %}
+			- "{{ matrix_synapse_container_federation_api_plain_host_bind_port }}:8048"
+			{% endif %}
+			{% if matrix_synapse_metrics_enabled and matrix_synapse_container_metrics_api_host_bind_port %}
+			- "{{ matrix_synapse_container_metrics_api_host_bind_port }}:{{ matrix_synapse_metrics_port }}"
+			{% endif %}
+    
+networks:
+  external_network:
+    external:
+      name: nginx_nginx

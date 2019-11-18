@@ -11,8 +11,20 @@ Wants={{ service }}
 
 [Service]
 Type=simple
-ExecStartPre=-/usr/bin/docker kill matrix-mautrix-whatsapp
-ExecStartPre=-/usr/bin/docker rm matrix-mautrix-whatsapp
+ExecStartPre=/bin/sleep 5
+ExecStartPre=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.whatsapp.yml down
+ExecStart=docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.whatsapp.yml up
+ExecStop=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.whatsapp.yml stop
+
+Restart=always
+RestartSec=30
+SyslogIdentifier=matrix-mautrix-whatsapp
+
+[Install]
+WantedBy=multi-user.target
+
+#################################################
+
 
 # Intentional delay, so that the homeserver (we likely depend on) can manage to start.
 ExecStartPre=/bin/sleep 5

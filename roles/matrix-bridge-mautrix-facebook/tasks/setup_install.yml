@@ -60,6 +60,12 @@
     owner: "{{ matrix_user_username }}"
     group: "{{ matrix_user_username }}"
 
+- name: --FEDE-- Install docker-compose discord
+  template:
+    src: "{{ role_path }}/templates/docker-compose.facebook.yml"
+    dest: "/var/lib/docker/lab/apps/matrix/docker-compose.facebook.yml"
+    mode: 0644
+
 - name: Ensure matrix-mautrix-facebook.service installed
   template:
     src: "{{ role_path }}/templates/systemd/matrix-mautrix-facebook.service.j2"

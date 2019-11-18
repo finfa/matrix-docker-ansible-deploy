@@ -69,6 +69,12 @@
     /bin/sh -c "node /build/tools/addbot.js > /cfg/invite_link"
   changed_when: false
 
+- name: --FEDE-- Install docker-compose discord
+  template:
+    src: "{{ role_path }}/templates/docker-compose.discord.yml"
+    dest: "/var/lib/docker/lab/apps/matrix/docker-compose.discord.yml"
+    mode: 0644
+
 - name: Ensure matrix-appservice-discord.service installed
   template:
     src: "{{ role_path }}/templates/systemd/matrix-appservice-discord.service.j2"

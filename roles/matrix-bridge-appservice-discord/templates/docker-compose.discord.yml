@@ -1,0 +1,23 @@
+version: '3'
+services:
+
+  web:
+    container_name: matrix-appservice-discord
+    image: "{{ matrix_appservice_discord_docker_image }}"
+    user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
+    cap_drop:
+      - ALL
+    restart: always
+    networks:
+      - external_network
+    command: "node /build/src/discordas.js -p 9005 -c /cfg/config.yaml -f /cfg/registration.yaml"
+    volumes:
+			- "{{ matrix_appservice_discord_config_path }}:/cfg"
+      - "{{ matrix_appservice_discord_data_path }}:/data"
+#    ports:
+#      - "{{ matrix_appservice_discord_container_http_host_bind_port }}:9005"
+
+networks:
+  external_network:
+    external:
+      name: nginx_nginx
