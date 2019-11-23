@@ -56,7 +56,7 @@ matrix_appservice_discord_configuration_yaml: |
     # will not be shown as away or online.
     disablePresence: {{ matrix_appservice_discord_bridge_disablePresence|to_json }}
     # Disable sending typing notifications when somebody on Discord types.
-    disableTypingNotifications: false
+    disableTypingNotifications: true
     # Disable deleting messages on Discord if a message is redacted on Matrix.
     disableDeletionForwarding: false
     # Enable users to bridge rooms using !discord commands. See

@@ -20,13 +20,11 @@ services:
       - "{{ matrix_riot_web_data_path }}/home.html:/etc/riot-web/home.html:ro"
       {% endif %}
       - "{{ matrix_riot_web_data_path }}/welcome.html:/etc/riot-web/welcome.html:ro"
-#    ports:
-#      {% if matrix_riot_web_container_http_host_bind_port %}
-#      - "{{ matrix_riot_web_container_http_host_bind_port }}:8080"
-#      {% endif %}
+    expose:
+      - "8091"
     environment:
       - VIRTUAL_HOST=riot.technodro.me
-      - VIRTUAL_PORT=8080
+      - VIRTUAL_PORT=8091
       - LETSENCRYPT_HOST=riot.technodro.me
       - LETSENCRYPT_EMAIL=admin@technodro.me
       - LETSENCRYPT_TEST=false

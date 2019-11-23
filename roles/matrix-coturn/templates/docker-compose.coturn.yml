@@ -16,9 +16,9 @@ services:
     command: -c /turnserver.conf
     volumes:
       - "{{ matrix_coturn_config_path }}:/turnserver.conf:ro"
-      {% for volume in matrix_coturn_container_additional_volumes %}
-      - "{{ volume.src }}:{{ volume.dst }}:{{ volume.options }}"
-      {% endfor %}
+      - "/var/lib/docker/lab/apps/nginx/certs/matrix.technodro.me/fullchain.pem:/data/matrix/ssl/config/live/matrix.technodro.me/fullchain.pem:ro"
+      - "/var/lib/docker/lab/apps/nginx/certs/matrix.technodro.me/key.pem:/data/matrix/ssl/config/live/matrix.technodro.me/privkey.pem:ro"
+
     ports:
       - 3478:3478
       - 3478:3478/udp
