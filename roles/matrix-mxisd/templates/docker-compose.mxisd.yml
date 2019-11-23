@@ -2,6 +2,7 @@ version: '3'
 services:
   mxisd:
     container_name: matrix-mxisd
+    hostname: matrix-mxisd
     image: "{{ matrix_mxisd_docker_image }}"
     user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
     cap_drop:

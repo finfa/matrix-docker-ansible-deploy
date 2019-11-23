@@ -2,6 +2,7 @@ version: '3'
 services:
   whatsapp:
     container_name: matrix-mautrix-whatsapp
+    hostname: matrix-mautrix-whatsapp
     image: "{{ matrix_mautrix_whatsapp_docker_image }}"
     user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
     cap_drop:

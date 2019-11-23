@@ -1,10 +1,4 @@
-allow all;
-
-proxy_temp_path /tmp/proxy_temp;
-client_body_temp_path /tmp/client_temp;
-fastcgi_temp_path /tmp/fastcgi_temp;
-uwsgi_temp_path /tmp/uwsgi_temp;
-scgi_temp_path /tmp/scgi_temp;
+#jinja2: lstrip_blocks: "True"
 
 client_max_body_size 100M;
 proxy_max_temp_file_size 0;
@@ -12,10 +6,6 @@ proxy_max_temp_file_size 0;
 {% for configuration_block in matrix_nginx_proxy_proxy_matrix_additional_server_configuration_blocks %}
 	{{- configuration_block }}
 {% endfor %}
-
-location /3a584129-5fbe-58eb-bd46-30bbce603f9d {
-    proxy_pass http://172.19.13.13:8080;
-}
 
 location /.well-known/matrix {
 	root {{ matrix_static_files_base_path }};

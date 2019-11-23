@@ -2,6 +2,7 @@ version: '3'
 services:
   postgres:
     container_name: matrix-postgres
+    hostname: matrix-postgres
     image: "{{ matrix_postgres_docker_image_to_use }}"
     env_file: "{{ matrix_postgres_base_path }}/env-postgres-server"
     user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"

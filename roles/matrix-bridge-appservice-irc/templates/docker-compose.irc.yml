@@ -2,6 +2,7 @@ version: '3'
 services:
   irc:
     container_name: matrix-appservice-irc
+    hostname: matrix-appservice-irc
     image: "{{ matrix_appservice_irc_docker_image }}"
     user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
     cap_drop:

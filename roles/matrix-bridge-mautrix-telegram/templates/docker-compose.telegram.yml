@@ -2,6 +2,7 @@ version: '3'
 services:
   telegram:
     container_name: matrix-mautrix-telegram
+    hostname: matrix-mautrix-telegram
     image: "{{ matrix_mautrix_telegram_docker_image }}"
     user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
     cap_drop:

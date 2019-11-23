@@ -2,6 +2,7 @@ version: '3'
 services:
   facebook:
     container_name: matrix-mautrix-facebook
+    hostname: matrix-mautrix-facebook
     image: "{{ matrix_mautrix_facebook_docker_image }}"
     user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
     links:
