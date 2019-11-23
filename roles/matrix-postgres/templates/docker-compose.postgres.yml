@@ -10,13 +10,13 @@ services:
       - ALL
     restart: always
     tmpfs:
-			- /tmp
-			- /run/postgresql
+      - /tmp
+      - /run/postgresql
     networks:
       - external_network
     volumes:
       - {{ matrix_postgres_data_path }}:/var/lib/postgresql/data:rw
-			- /etc/passwd:/etc/passwd:ro
+      - /etc/passwd:/etc/passwd:ro
 
 networks:
   external_network:
