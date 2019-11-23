@@ -12,9 +12,9 @@ Wants={{ service }}
 [Service]
 Type=simple
 ExecStartPre=/bin/sleep 5
-ExecStartPre=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.whatsapp.yml kill
-ExecStart=docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.whatsapp.yml up
-ExecStop=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.whatsapp.yml kill
+ExecStartPre=-/usr/bin/docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.whatsapp.yml kill
+ExecStart=/usr/bin/docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.whatsapp.yml up
+ExecStop=-/usr/bin/docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.whatsapp.yml kill
 
 Restart=always
 RestartSec=30

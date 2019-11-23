@@ -2,6 +2,7 @@ version: '3'
 services:
   coturn:
     container_name: matrix-coturn
+    hostname: matrix-coturn
     image: "{{ matrix_coturn_docker_image }}"
     user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
     entrypoint: turnserver

@@ -9,9 +9,9 @@ After={{ service }}
 [Service]
 Type=simple
 ExecStartPre=/bin/sleep 5
-ExecStartPre=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.coturn.yml down
-ExecStart=docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.coturn.yml up
-ExecStop=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.coturn.yml stop
+ExecStartPre=-/usr/bin/docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.coturn.yml kill
+ExecStart=/usr/bin/docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.coturn.yml up
+ExecStop=-/usr/bin/docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.coturn.yml kill
 
 # This only reloads certificates (not other configuration).
 # See: https://github.com/coturn/coturn/pull/236

@@ -2,6 +2,7 @@ version: '3'
 services:
   discord:
     container_name: matrix-appservice-discord
+    hostname: matrix-appservice-discord
     image: "{{ matrix_appservice_discord_docker_image }}"
     user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
     cap_drop:

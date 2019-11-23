@@ -14,9 +14,9 @@ Type=simple
 
 # Intentional delay, so that the homeserver (we likely depend on) can manage to start.
 ExecStartPre=/bin/sleep 5
-ExecStartPre=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.discord.yml kill
-ExecStart=docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.discord.yml up
-ExecStop=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.discord.yml kill
+ExecStartPre=-/usr/bin/docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.discord.yml kill
+ExecStart=/usr/bin/docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.discord.yml up
+ExecStop=-/usr/bin/docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.discord.yml kill
 
 Restart=always
 RestartSec=30
