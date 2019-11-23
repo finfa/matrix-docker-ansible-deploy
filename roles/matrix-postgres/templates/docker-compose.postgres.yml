@@ -14,12 +14,8 @@ services:
     networks:
       - external_network
     volumes:
-			-v {{ matrix_postgres_data_path }}:/var/lib/postgresql/data:rw \
-			-v /etc/passwd:/etc/passwd:ro \
-    ports:
-      {% if matrix_postgres_container_postgres_bind_port %}
-			- "{{ matrix_postgres_container_postgres_bind_port }}:5432"
-			{% endif %}
+      - {{ matrix_postgres_data_path }}:/var/lib/postgresql/data:rw
+			- /etc/passwd:/etc/passwd:ro
 
 networks:
   external_network:

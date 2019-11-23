@@ -14,17 +14,17 @@ services:
       - external_network
     command: -c /turnserver.conf
     volumes:
-			- "{{ matrix_coturn_config_path }}:/turnserver.conf:ro"
-			{% for volume in matrix_coturn_container_additional_volumes %}
-			- "{{ volume.src }}:{{ volume.dst }}:{{ volume.options }}"
-			{% endfor %}
+      - "{{ matrix_coturn_config_path }}:/turnserver.conf:ro"
+      {% for volume in matrix_coturn_container_additional_volumes %}
+      - "{{ volume.src }}:{{ volume.dst }}:{{ volume.options }}"
+      {% endfor %}
     ports:
-			- 3478:3478
-			- 3478:3478/udp
-			- 5349:5349
-			- 5349:5349/udp
-			- {{ matrix_coturn_turn_udp_min_port }}-{{ matrix_coturn_turn_udp_max_port }}:{{ matrix_coturn_turn_udp_min_port }}-{{ matrix_coturn_turn_udp_max_port }}/udp
-    
+      - 3478:3478
+      - 3478:3478/udp
+      - 5349:5349
+      - 5349:5349/udp
+      - {{ matrix_coturn_turn_udp_min_port }}-{{ matrix_coturn_turn_udp_max_port }}:{{ matrix_coturn_turn_udp_min_port }}-{{ matrix_coturn_turn_udp_max_port }}/udp
+
 networks:
   external_network:
     external:

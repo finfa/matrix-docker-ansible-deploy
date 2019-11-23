@@ -11,12 +11,12 @@ services:
       - external_network
     command: "python3 -m mautrix_telegram -c /config/config.yaml"
     volumes:
-			- "{{ matrix_mautrix_telegram_config_path }}:/config:z"
-			- "{{ matrix_mautrix_telegram_data_path }}:/data:z"
-    ports:
-			{% if matrix_mautrix_telegram_container_http_host_bind_port %}
-			 - "{{ matrix_mautrix_telegram_container_http_host_bind_port }}:8080"
-			{% endif %}
+      - "{{ matrix_mautrix_telegram_config_path }}:/config:z"
+      - "{{ matrix_mautrix_telegram_data_path }}:/data:z"
+#    ports:
+#      {% if matrix_mautrix_telegram_container_http_host_bind_port %}
+#        - "{{ matrix_mautrix_telegram_container_http_host_bind_port }}:8080"
+#      {% endif %}
 
   telegram_db:
     container_name: matrix-mautrix-telegram-db
@@ -29,10 +29,10 @@ services:
       - external_network
     command: "alembic -x config=/config/config.yaml upgrade head"
     volumes:
-			- "{{ matrix_mautrix_telegram_config_path }}:/config:z"
-			- "{{ matrix_mautrix_telegram_data_path }}:/data:z"
-    ports:
-      - "{{ matrix_appservice_discord_container_http_host_bind_port }}:9005"
+      - "{{ matrix_mautrix_telegram_config_path }}:/config:z"
+      - "{{ matrix_mautrix_telegram_data_path }}:/data:z"
+#    ports:
+#      - "{{ matrix_appservice_discord_container_http_host_bind_port }}:9005"
 
 networks:
   external_network:

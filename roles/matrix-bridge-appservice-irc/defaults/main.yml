@@ -419,7 +419,7 @@ matrix_appservice_irc_configuration_yaml: |
       port: 1113
       # The address to listen on for incoming ident requests.
       # Default: 0.0.0.0
-      address: "::"
+      address: "0.0.0.0"
 
     # Configuration for logging. Optional. Default: console debug level logging
     # only.

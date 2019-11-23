@@ -11,12 +11,12 @@ services:
       - external_network
     command: "-c /config/config.yaml -f /config/registration.yaml -p 9999"
     volumes:
-			- "{{ matrix_appservice_irc_config_path }}:/config:z"
-			- "{{ matrix_appservice_irc_data_path }}:/data:z"
-    port:
-			{% if matrix_appservice_irc_container_http_host_bind_port %}
-			- "{{ matrix_appservice_irc_container_http_host_bind_port }}:9999"
-			{% endif %}
+      - "{{ matrix_appservice_irc_config_path }}:/config:z"
+      - "{{ matrix_appservice_irc_data_path }}:/data:z"
+#ports:
+#    {% if matrix_appservice_irc_container_http_host_bind_port %}
+      #- "{{ matrix_appservice_irc_container_http_host_bind_port }}:9999"
+#    {% endif %}
 
 networks:
   external_network:

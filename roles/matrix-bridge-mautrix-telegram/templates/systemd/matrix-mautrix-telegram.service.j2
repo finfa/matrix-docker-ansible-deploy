@@ -13,9 +13,9 @@ Wants={{ service }}
 Type=simple
 
 ExecStartPre=/bin/sleep 5
-ExecStartPre=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.facebook.yml down
+ExecStartPre=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.facebook.yml kill
 ExecStart=docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.facebook.yml up
-ExecStop=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.facebook.yml stop
+ExecStop=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.facebook.yml kill
 
 Restart=always
 RestartSec=30

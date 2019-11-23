@@ -10,10 +10,10 @@ services:
     networks:
       - external_network
     command: "/usr/bin/mautrix-whatsapp -c /config/config.yaml -r /config/registration.yaml"
-		workdir: /data
+    working_dir: /data
     volumes:
-			- "{{ matrix_mautrix_whatsapp_config_path }}:/config:z"
-			- "{{ matrix_mautrix_whatsapp_data_path }}:/data:z"
+      - "{{ matrix_mautrix_whatsapp_config_path }}:/config:z"
+      - "{{ matrix_mautrix_whatsapp_data_path }}:/data:z"
 
 networks:
   external_network:

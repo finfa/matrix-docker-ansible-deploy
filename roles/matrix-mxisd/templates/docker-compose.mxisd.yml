@@ -12,16 +12,16 @@ services:
     tmpfs: /tmp
     read_only: true
     volumes:
-			- "{{ matrix_mxisd_config_path }}:/etc/mxisd:ro"
-			- "{{ matrix_mxisd_data_path }}:/var/mxisd:rw"
-    ports:
-			{% if matrix_mxisd_container_http_host_bind_port %}
-			-  "{{ matrix_mxisd_container_http_host_bind_port }}:8090"
-			{% endif %}
+      - "{{ matrix_mxisd_config_path }}:/etc/mxisd:ro"
+      - "{{ matrix_mxisd_data_path }}:/var/mxisd:rw"
+#    ports:
+#      {% if matrix_mxisd_container_http_host_bind_port %}
+#      -  "{{ matrix_mxisd_container_http_host_bind_port }}:8090"
+#      {% endif %}
     environment:
-			{% if matrix_mxisd_verbose_logging %}
-			- MXISD_LOG_LEVEL=debug
-			{% endif %}
+      {% if matrix_mxisd_verbose_logging %}
+       - MXISD_LOG_LEVEL=debug
+      {% endif %}
 
 networks:
   external_network:

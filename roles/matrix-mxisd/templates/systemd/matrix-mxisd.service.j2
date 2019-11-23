@@ -12,9 +12,9 @@ Wants={{ service }}
 [Service]
 Type=simple
 ExecStartPre=/bin/sleep 5
-ExecStartPre=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.mxisd.yml down
+ExecStartPre=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.mxisd.yml kill
 ExecStart=docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.mxisd.yml up
-ExecStop=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.mxisd.yml stop
+ExecStop=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.mxisd.yml kill
 
 Restart=always
 RestartSec=30

@@ -11,11 +11,11 @@ services:
     networks:
       - external_network
     volumes:
-			- "{{ matrix_dimension_base_path }}:/data:rw"
-    ports:
-			{% if matrix_dimension_container_http_host_bind_port %}
-			- "{{ matrix_dimension_container_http_host_bind_port }}:8184"
-			{% endif %}
+      - "{{ matrix_dimension_base_path }}:/data:rw"
+#    ports:
+#      {% if matrix_dimension_container_http_host_bind_port %}
+#       - "{{ matrix_dimension_container_http_host_bind_port }}:8184"
+#      {% endif %}
     environment:
       - NODE_TLS_REJECT_UNAUTHORIZED=0
       - VIRTUAL_HOST=dimension.technodro.me
@@ -24,7 +24,7 @@ services:
       - LETSENCRYPT_EMAIL=admin@technodro.me
       - LETSENCRYPT_TEST=false
       - HSTS=off
-    
+
 networks:
   external_network:
     external:

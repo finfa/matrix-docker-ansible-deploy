@@ -11,9 +11,9 @@ Wants={{ service }}
 
 [Service]
 Type=simple
-ExecStartPre=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.synapse.yml down
+ExecStartPre=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.synapse.yml kill
 ExecStart=docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.synapse.yml up
-ExecStop=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.synapse.yml stop
+ExecStop=-docker-compose -f /var/lib/docker/lab/apps/matrix/docker-compose.synapse.yml kill
 
 ExecReload=/usr/bin/docker exec matrix-synapse kill -HUP 1
 Restart=always

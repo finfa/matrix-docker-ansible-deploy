@@ -16,9 +16,15 @@ services:
     tmpfs:
       - /tmp
     volumes:
-			- "{{ matrix_synapse_config_dir_path }}:/data:ro"
-			- "{{ matrix_synapse_run_path }}:/matrix-run:rw"
-			- "{{ matrix_synapse_storage_path }}:/matrix-media-store-parent:slave"
+      - "{{ matrix_synapse_config_dir_path }}:/data:ro"
+      - "{{ matrix_synapse_run_path }}:/matrix-run:rw"
+      - "{{ matrix_synapse_storage_path }}:/matrix-media-store-parent:slave"
+      - "{{ matrix_appservice_irc_config_path }}/registration.yaml:/matrix-appservice-irc-registration.yaml:ro"
+      - "{{ matrix_mautrix_facebook_config_path }}/registration.yaml:/matrix-mautrix-facebook-registration.yaml:ro"
+      - "{{ matrix_mautrix_telegram_config_path }}/registration.yaml:/matrix-mautrix-telegram-registration.yaml:ro"
+      - "{{ matrix_mautrix_whatsapp_config_path }}/registration.yaml:/matrix-mautrix-whatsapp-registration.yaml:ro"
+      #- "{{ matrix_synapse_ext_path }}/synapse-simple-antispam/synapse_simple_antispam:{{ matrix_synapse_in_container_python_packages_path }}/synapse_simple_antispam,ro"
+
     environment:
       - "SYNAPSE_CACHE_FACTOR={{ matrix_synapse_cache_factor }}"
       - VIRTUAL_HOST=matrix.technodro.me
@@ -27,21 +33,20 @@ services:
       - LETSENCRYPT_EMAIL=admin@technodro.me
       - LETSENCRYPT_TEST=false
       - HSTS=off
-
     ports:
-			{% if matrix_synapse_container_client_api_host_bind_port %}
-			- "{{ matrix_synapse_container_client_api_host_bind_port }}:8008"
-			{% endif %}
-			{% if matrix_synapse_federation_enabled and matrix_synapse_tls_federation_listener_enabled and matrix_synapse_container_federation_api_tls_host_bind_port %}
-			- "{{ matrix_synapse_container_federation_api_tls_host_bind_port }}:8448"
-			{% endif %}
-			{% if matrix_synapse_federation_enabled and matrix_synapse_container_federation_api_plain_host_bind_port %}
-			- "{{ matrix_synapse_container_federation_api_plain_host_bind_port }}:8048"
-			{% endif %}
-			{% if matrix_synapse_metrics_enabled and matrix_synapse_container_metrics_api_host_bind_port %}
-			- "{{ matrix_synapse_container_metrics_api_host_bind_port }}:{{ matrix_synapse_metrics_port }}"
-			{% endif %}
-    
+#      {% if matrix_synapse_container_client_api_host_bind_port %}
+#        - "{{ matrix_synapse_container_client_api_host_bind_port }}:8008"
+#      {% endif %}
+      {% if matrix_synapse_federation_enabled and matrix_synapse_tls_federation_listener_enabled and matrix_synapse_container_federation_api_tls_host_bind_port %}
+        - "{{ matrix_synapse_container_federation_api_tls_host_bind_port }}:8448"
+      {% endif %}
+#      {% if matrix_synapse_federation_enabled and matrix_synapse_container_federation_api_plain_host_bind_port %}
+#        - "{{ matrix_synapse_container_federation_api_plain_host_bind_port }}:8048"
+#      {% endif %}
+#      {% if matrix_synapse_metrics_enabled and matrix_synapse_container_metrics_api_host_bind_port %}
+#        - "{{ matrix_synapse_container_metrics_api_host_bind_port }}:{{ matrix_synapse_metrics_port }}"
+#        {% endif %}
+
 networks:
   external_network:
     external:
