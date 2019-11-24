@@ -5,10 +5,10 @@ services:
     hostname: matrix-mautrix-facebook
     image: "{{ matrix_mautrix_facebook_docker_image }}"
     user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
-    links:
-      - facebook_db
-    depends_on:
-      - facebook_db
+#    links:
+      #- facebook_db
+#    depends_on:
+#      - facebook_db
     cap_drop:
       - ALL
     restart: always

@@ -25,7 +25,7 @@ services:
     user: "{{ matrix_user_uid }}:{{ matrix_user_gid }}"
     cap_drop:
       - ALL
-    restart: always
+    restart: "no"
     networks:
       - external_network
     command: "alembic -x config=/config/config.yaml upgrade head"
